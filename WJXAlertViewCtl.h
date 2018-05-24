@@ -9,9 +9,9 @@
 #import <UIKit/UIKit.h>
 #import "WJXAlertAction.h"
 
-typedef NS_ENUM(NSInteger, MAAlertViewType) {
-    MAAlertViewTypeAlert = 0,       // 提示弹窗
-    MAAlertViewTypeSheet,           // 选择弹窗
+typedef NS_ENUM(NSInteger, WJXAlertViewType) {
+    WJXAlertViewTypeAlert = 0,       // 提示弹窗
+    WJXAlertViewTypeSheet,           // 选择弹窗
 };
 
 @interface WJXAlertViewCtl : UIViewController
@@ -21,7 +21,7 @@ typedef NS_ENUM(NSInteger, MAAlertViewType) {
  */
 + (instancetype)alertControllerWithTitle:(NSString *)title
                                  message:(NSString *)message
-                          preferredStyle:(MAAlertViewType)preferredStyle;
+                          preferredStyle:(WJXAlertViewType)preferredStyle;
 /**
  设置富文本标题
  */

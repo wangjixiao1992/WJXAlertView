@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
 
 @interface WJXAlertViewCtl ()<UIViewControllerTransitioningDelegate>
 
-@property (nonatomic, assign) MAAlertViewType alertType;
+@property (nonatomic, assign) WJXAlertViewType alertType;
 @property (nonatomic, copy)   NSString *alertTitle;
 @property (nonatomic, copy)   NSString *alertContent;
 @property (nonatomic, copy)   NSAttributedString *titleString;
@@ -43,7 +43,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
 - (NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext
 {
     if (self.animationStyle == WJXAlertViewCtlAnimationStyleDismissing) {
-        return 0.3f;
+        return 0.4f;
     }
     return 1.0f;
 }
@@ -59,43 +59,36 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
         // 马上布局,防止获取frame失败
         [toVC.view layoutIfNeeded];
         
-        [UIView animateWithDuration:0.3
-                              delay:0.1
-             usingSpringWithDamping:1.0
-              initialSpringVelocity:0
-                            options:UIViewAnimationOptionCurveEaseIn animations:^{
-                                toVC.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
-                                CGFloat height = toVC.backView.frame.size.height;
-                                CGFloat width = toVC.backView.frame.size.width;
-                                CGFloat x = toVC.backView.frame.origin.x;
-                                if (toVC.alertType == MAAlertViewTypeSheet) {
-                                    toVC.backView.frame = CGRectMake(x , kscreenHeight - height, width, height);
-                                } else {
-                                    toVC.backView.frame = CGRectMake(x , (kscreenHeight - height) / 2, width, height);
-                                }
-                                [toVC.view layoutIfNeeded];
-                            } completion:^(BOOL finished) {
-                                [transitionContext completeTransition:YES];
-                            }];
+        [UIView animateWithDuration:0.2
+                         animations:^{
+                             toVC.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+                             CGFloat height = toVC.backView.frame.size.height;
+                             CGFloat width = toVC.backView.frame.size.width;
+                             CGFloat x = toVC.backView.frame.origin.x;
+                             if (toVC.alertType == WJXAlertViewTypeSheet) {
+                                 toVC.backView.frame = CGRectMake(x , kscreenHeight - height, width, height);
+                             } else {
+                                 toVC.backView.transform = CGAffineTransformScale(toVC.backView.transform, 1 / 0.9, 1 / 0.9);
+                             }
+                             [toVC.view layoutIfNeeded];
+                         } completion:^(BOOL finished) {
+                             [transitionContext completeTransition:YES];
+                         }];
     } else if (self.animationStyle == WJXAlertViewCtlAnimationStyleDismissing) {
         WJXAlertViewCtl *fromVC = (WJXAlertViewCtl *)[transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+        //视图透明消失
         [UIView animateWithDuration:0.3
-                              delay:0.1
-             usingSpringWithDamping:1.0
-              initialSpringVelocity:0
-                            options:UIViewAnimationOptionCurveEaseIn
                          animations:^{
-                             fromVC.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
+                             //先消失
                              CGFloat height = fromVC.backView.frame.size.height;
                              CGFloat width = fromVC.backView.frame.size.width;
                              CGFloat x = fromVC.backView.frame.origin.x;
-                             if (fromVC.alertType == MAAlertViewTypeSheet) {
-                                 fromVC.backView.frame = CGRectMake(x, kscreenHeight, width, height);
-                             } else if (fromVC.alertType == MAAlertViewTypeAlert) {
+                             if (fromVC.alertType == WJXAlertViewTypeSheet) {
                                  fromVC.backView.frame = CGRectMake(x, kscreenHeight, width, height);
                              } else {
-                                 fromVC.backView.frame = CGRectMake(x, - height, width, height);
+                                 [fromVC.backView removeFromSuperview];
                              }
+                             fromVC.view.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0];
                          } completion:^(BOOL finished) {
                              [transitionContext completeTransition:YES];
                          }];
@@ -120,6 +113,10 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor clearColor];
     
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                          action:@selector(dissMiss)];
+    [self.view addGestureRecognizer:tap];
+    
     [self setupUI];
 }
 
@@ -130,7 +127,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
 {
     [self.view addSubview:self.backView];
     
-    if (self.alertType == MAAlertViewTypeAlert) {
+    if (self.alertType == WJXAlertViewTypeAlert) {
         [self.backView addSubview:self.alertView];
     } else {
         [self.backView addSubview:self.sheetView];
@@ -143,7 +140,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
  */
 + (instancetype)alertControllerWithTitle:(NSString *)title
                                  message:(NSString *)message
-                          preferredStyle:(MAAlertViewType)preferredStyle
+                          preferredStyle:(WJXAlertViewType)preferredStyle
 {
     WJXAlertViewCtl *alert = [[WJXAlertViewCtl alloc] init];
     alert.alertTitle = title;
@@ -214,6 +211,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
     [_alertView addSubview:button];
     return button;
 }
+
 #pragma mark - 懒加载
 - (UIView *)backView
 {
@@ -230,7 +228,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
         _alertView = [[UIView alloc] init];
         CGFloat width = kscreenWidth - 80;
         _alertView.frame = CGRectMake(0, 0, width, 0);
-        _alertView.backgroundColor = MALineColor;
+        _alertView.backgroundColor = kLineColor;
         _alertView.clipsToBounds = YES;
         _alertView.layer.cornerRadius = 10;
         
@@ -247,7 +245,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
             } else {
                 headerLabel.attributedText = self.titleString;
             }
-            headerLabel.textColor = MATitleColor;
+            headerLabel.textColor = kTitleColor;
             headerLabel.font = [UIFont systemFontOfSize:18];
             headerLabel.textAlignment = NSTextAlignmentCenter;
             headerLabel.backgroundColor = [UIColor whiteColor];
@@ -268,7 +266,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
         if (self.alertContent.length > 0 || self.contentString.length > 0) {
             UILabel *contentLabel = [[UILabel alloc] init];
             contentLabel.textColor = [UIColor colorWithRed:117/255.0 green:117/255.0 blue:117/255.0 alpha:1.0];
-            contentLabel.font = [UIFont systemFontOfSize:14];
+            contentLabel.font = [UIFont systemFontOfSize:15];
             contentLabel.backgroundColor = [UIColor whiteColor];
             [scrollView addSubview:contentLabel];
             
@@ -318,16 +316,16 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
         CGFloat actionX = 0;
         CGFloat actionWith = width;
         if (self.dataSourceArray.count == 2) {
-            actionWith = (width - MALineHeight)/ 2;
+            actionWith = (width - kLineHeight)/ 2;
         }
         for (int i = 0; i < self.dataSourceArray.count; i++) {
             WJXAlertAction *action = [self.dataSourceArray objectAtIndex:i];
             UIButton *button = [self setButtonWithAction:action];
             button.tag = 1000 + i;
-            button.frame = CGRectMake(actionX, offset + MALineHeight, actionWith, kButtonHeight);
+            button.frame = CGRectMake(actionX, offset + kLineHeight, actionWith, kButtonHeight);
             [_alertView addSubview:button];
             //计算下个按钮的位置
-            CGFloat offsetX = CGRectGetMaxX(button.frame) + MALineHeight;
+            CGFloat offsetX = CGRectGetMaxX(button.frame) + kLineHeight;
             if (offsetX >= width) {
                 actionX = 0;
                 offset = CGRectGetMaxY(button.frame);
@@ -336,7 +334,9 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
             }
         }
         _alertView.frame = CGRectMake(0, 0, width, offset);
-        self.backView.frame = CGRectMake((kscreenWidth - width) / 2, kscreenHeight, width, offset);
+        CGFloat height = offset;
+        self.backView.frame = CGRectMake((kscreenWidth - width) / 2 , (kscreenHeight - height) / 2, width, height);
+        self.backView.transform = CGAffineTransformScale(self.backView.transform, 0.9, 0.9);
     }
     return  _alertView;
 }
@@ -346,9 +346,10 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
     if (!_sheetView) {
         _sheetView = [[UIView alloc] init];
         _sheetView.frame = CGRectMake(0, 0, kscreenWidth, 0);
-        _sheetView.backgroundColor = MALineColor;
+        _sheetView.backgroundColor = kLineColor;
         
         CGFloat offset = 0;
+        //标题
         if (self.alertTitle.length > 0 || self.titleString.length > 0) {
             UILabel *headerLabel = [[UILabel alloc] init];
             if (self.alertTitle.length > 0) {
@@ -357,20 +358,18 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
                 headerLabel.attributedText = self.titleString;
             }
             headerLabel.frame = CGRectMake(0, 0, kscreenWidth, 50);
-            headerLabel.textColor = MATextColor;
+            headerLabel.textColor = kTextColor;
             headerLabel.font = [UIFont systemFontOfSize:20];
             headerLabel.textAlignment = NSTextAlignmentCenter;
             headerLabel.backgroundColor = [UIColor whiteColor];
             [_sheetView addSubview:headerLabel];
             offset = CGRectGetMaxY(headerLabel.frame);
         }
-        UIScrollView *scrollView = [[UIScrollView alloc] init];
-        scrollView.clipsToBounds = YES;
-        [_sheetView addSubview:scrollView];
         
+        //数组冗余 避免出现没有选择的时候空页面
         if (self.dataSourceArray.count == 0) {
             WJXAlertAction *cancel = [WJXAlertAction actionWithTitle:@"取消"
-                                                           textColor:[UIColor redColor]
+                                                           textColor:kTextColor
                                                                style:WJXAlertActionTypeSheetCancel
                                                              handler:^(WJXAlertAction *action) {
                                                                  
@@ -378,19 +377,28 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
             [self addAction:cancel];
         }
         
-        CGFloat buttonY = 0;
+        
+        //操作区
+        UIScrollView *scrollView = [[UIScrollView alloc] init];
+        scrollView.clipsToBounds = YES;
+        [_sheetView addSubview:scrollView];
+ 
+        CGFloat buttonY = - kLineHeight;
+        if (offset > 0) {
+            buttonY = 0;
+        }
         for (int i = 0; i < self.dataSourceArray.count; i++) {
             WJXAlertAction *action = [self.dataSourceArray objectAtIndex:i];
             UIButton *button = [self setButtonWithAction:action];
             button.tag = 1000 + i;
             if (action.style == WJXAlertActionTypeSheetCancel) {
                 UIView *line = [[UIView alloc] init];
-                line.backgroundColor = MABackGroundCloor;
+                line.backgroundColor = kBackGroundCloor;
                 line.frame = CGRectMake(0, buttonY, kscreenWidth, 10);
                 [scrollView addSubview:line];
                 button.frame = CGRectMake(0, buttonY + 10, kscreenWidth, kButtonHeight);
             } else {
-                button.frame = CGRectMake(0, buttonY + MALineHeight, kscreenWidth, kButtonHeight);
+                button.frame = CGRectMake(0, buttonY + kLineHeight, kscreenWidth, kButtonHeight);
             }
             [scrollView addSubview:button];
             buttonY = CGRectGetMaxY(button.frame);
