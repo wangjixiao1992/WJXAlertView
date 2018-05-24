@@ -18,7 +18,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
 
 @interface WJXAlertViewCtl ()<UIViewControllerTransitioningDelegate>
 
-@property (nonatomic, assign) MAAlertViewType alertType;
+@property (nonatomic, assign) WJXAlertViewType alertType;
 @property (nonatomic, copy)   NSString *alertTitle;
 @property (nonatomic, copy)   NSString *alertContent;
 @property (nonatomic, copy)   NSAttributedString *titleString;
@@ -68,7 +68,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
                                 CGFloat height = toVC.backView.frame.size.height;
                                 CGFloat width = toVC.backView.frame.size.width;
                                 CGFloat x = toVC.backView.frame.origin.x;
-                                if (toVC.alertType == MAAlertViewTypeSheet) {
+                                if (toVC.alertType == WJXAlertViewTypeSheet) {
                                     toVC.backView.frame = CGRectMake(x , kscreenHeight - height, width, height);
                                 } else {
                                     toVC.backView.frame = CGRectMake(x , (kscreenHeight - height) / 2, width, height);
@@ -89,9 +89,9 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
                              CGFloat height = fromVC.backView.frame.size.height;
                              CGFloat width = fromVC.backView.frame.size.width;
                              CGFloat x = fromVC.backView.frame.origin.x;
-                             if (fromVC.alertType == MAAlertViewTypeSheet) {
+                             if (fromVC.alertType == WJXAlertViewTypeSheet) {
                                  fromVC.backView.frame = CGRectMake(x, kscreenHeight, width, height);
-                             } else if (fromVC.alertType == MAAlertViewTypeAlert) {
+                             } else if (fromVC.alertType == WJXAlertViewTypeAlert) {
                                  fromVC.backView.frame = CGRectMake(x, kscreenHeight, width, height);
                              } else {
                                  fromVC.backView.frame = CGRectMake(x, - height, width, height);
@@ -130,7 +130,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
 {
     [self.view addSubview:self.backView];
     
-    if (self.alertType == MAAlertViewTypeAlert) {
+    if (self.alertType == WJXAlertViewTypeAlert) {
         [self.backView addSubview:self.alertView];
     } else {
         [self.backView addSubview:self.sheetView];
@@ -143,7 +143,7 @@ typedef NS_ENUM(NSInteger, WJXAlertViewCtlAnimationStyle) {
  */
 + (instancetype)alertControllerWithTitle:(NSString *)title
                                  message:(NSString *)message
-                          preferredStyle:(MAAlertViewType)preferredStyle
+                          preferredStyle:(WJXAlertViewType)preferredStyle
 {
     WJXAlertViewCtl *alert = [[WJXAlertViewCtl alloc] init];
     alert.alertTitle = title;
