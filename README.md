@@ -5,7 +5,7 @@
 ## 版本
     1.0.6
     
-## 版本
+## 引用cocopods
    
     source 'https://github.com/wangjixiao1992/WJXAlertView.git'
     platform :ios, '8.0'
