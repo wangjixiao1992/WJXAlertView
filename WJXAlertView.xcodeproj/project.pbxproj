@@ -121,9 +121,9 @@
 			isa = PBXGroup;
 			children = (
 				E5F8F6B72137835800BD9CE5 /* UIColor+alert.h */,
+				E5F8F6BA2137835800BD9CE5 /* UIColor+alert.m */,
 				E5F8F6B82137835800BD9CE5 /* UILabel+alert.h */,
 				E5F8F6B92137835800BD9CE5 /* UILabel+alert.m */,
-				E5F8F6BA2137835800BD9CE5 /* UIColor+alert.m */,
 			);
 			path = Categories;
 			sourceTree = "<group>";

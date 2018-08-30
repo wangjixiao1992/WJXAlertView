@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "WJXAlertViewCtl.h"
 
 @interface ViewController ()
 
@@ -18,16 +18,35 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    
+    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+    button.frame = CGRectMake(100, 100, 100, 100);
+    button.backgroundColor = [UIColor redColor];
+    [button addTarget:self
+               action:@selector(alertViewShow)
+     forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
     
 }
 
-- (void)viewDidAppear:(BOOL)animated
+- (void)alertViewShow
 {
-    [super viewDidAppear:animated];
+    WJXAlertViewCtl *alert = [WJXAlertViewCtl alertControllerWithTitle:@"恭喜您，关注成功!"
+                                                               message:@"当房源价格变动时，我们会提醒您。"
+                                                        preferredStyle:WJXAlertViewTypeAlert];
+    //取消
+    WJXAlertAction *cancenAction = [WJXAlertAction actionWithTitle:@"我知道了"
+                                                         textColor:MAMainColor
+                                                             style:WJXAlertActionTypeBold
+                                                           handler:^(WJXAlertAction *action) {
+                                                               
+                                                           }];
     
-    
+    [alert addAction:cancenAction];
+    [self.navigationController presentViewController:alert
+                                            animated:YES
+                                          completion:nil];
 }
+
 
 
 
