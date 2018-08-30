@@ -7,7 +7,7 @@ s.description = '此控件是自定义弹窗控件,只是为了项目需求,模�
 s.homepage = 'https://github.com/wangjixiao1992/WJXAlertView'
 s.authors = {'wangjixiao' => '642907599@qq.com' }
 s.source = {:git => "https://github.com/wangjixiao1992/WJXAlertView.git", :tag => "v1.0.6"}
-s.source_files  = "WJXAlertView/Class/WJXAlertView/**/*.{h,m}"
+s.source_files  = "WJXAlertView/Class/WJXAlertView/"
 s.platform = :ios, "8.0"
 s.requires_arc = false
 end
