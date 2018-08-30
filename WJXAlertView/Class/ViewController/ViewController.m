@@ -30,11 +30,11 @@
 
 - (void)alertViewShow
 {
-    WJXAlertViewCtl *alert = [WJXAlertViewCtl alertControllerWithTitle:@"恭喜您，关注成功!"
-                                                               message:@"当房源价格变动时，我们会提醒您。"
+    WJXAlertViewCtl *alert = [WJXAlertViewCtl alertControllerWithTitle:@"title"
+                                                               message:@"content。"
                                                         preferredStyle:WJXAlertViewTypeAlert];
     //取消
-    WJXAlertAction *cancenAction = [WJXAlertAction actionWithTitle:@"我知道了"
+    WJXAlertAction *cancenAction = [WJXAlertAction actionWithTitle:@"cancel"
                                                          textColor:MAMainColor
                                                              style:WJXAlertActionTypeBold
                                                            handler:^(WJXAlertAction *action) {

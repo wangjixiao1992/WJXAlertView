@@ -4,14 +4,14 @@
     此控件是自定义弹窗控件,只是为了项目需求,模仿苹果原生弹窗的弹窗视图,同样包含alert/sheet两种模式,只是为了统一弹窗!
 
    ## 版本
-    1.0.3
+    1.0.6
     
    ## 版本
     source 'https://github.com/wangjixiao1992/WJXAlertView.git'
     platform :ios, '8.0'
     
     target 'TargetName' do
-    pod 'WJXAlertView', '~> 1.0.3'
+    pod 'WJXAlertView', '~> 1.0.6'
     end
 
    ## 演示代码
