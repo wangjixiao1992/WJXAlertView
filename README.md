@@ -35,4 +35,4 @@ WJXAlertAction *cancenAction = [WJXAlertAction actionWithTitle:@"cancel"
                          
 ## 联系我们
 如有疑问请发送邮件.谢谢~
-15037535383@163.com
+wjx_19920914_msgm@126.com
